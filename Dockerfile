@@ -1,19 +1,27 @@
-FROM python:latest
+FROM openjdk:latest
 
+RUN mkdir -p /home
 WORKDIR "/home"
 
-## mr roghani said
-RUN pip install numpy
+RUN mkdir -p src/package
+RUN mkdir -p build/classes
 
-RUN pip install pyinstaller
+WORKDIR "/home/src"
 
-COPY *.py ./code.py
-## binary code is in /dist/code/ directory but it depends on its libraries and its name is code
-RUN python -m PyInstaller code.py 
+COPY *.java ./src/package/
+RUN javac -sourcepath src -d build/classes package/*.java
+RUN cp ./package/*.java ./
 
-CMD ["cp", "-r", "/home/dist/code", "/tmp"]
+##########################################
+RUN name=`ls *.java | cut -d "." -f1`
+RUN echo Main-Class: main>myManifest
+##########################################
+
+RUN jar cfm build/main.jar myManifest -C build/classes/ .
+
+CMD ["cp", "/home/src/build/main.jar", "/tmp"]
 
 
 
 
-# Finaly python executable code is ./code/code
+# Finaly jar executable code is main.jar => running syntax: java -jar main.jar
