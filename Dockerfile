@@ -1,9 +1,19 @@
-FROM gcc:latest
+FROM python:latest
 
 WORKDIR "/home"
 
-COPY *.cpp ./code.cpp
+## mr roghani said
+RUN pip install numpy
 
-RUN g++ code.cpp -o code.o
+RUN pip install pyinstaller
 
-CMD ["cp", "/home/code.o", "/tmp"]
+COPY *.py ./code.py
+## binary code is in /dist/code/ directory but it depends on its libraries and its name is code
+RUN python -m PyInstaller code.py 
+
+CMD ["cp", "-r", "/home/dist/code", "/tmp"]
+
+
+
+
+# Finaly python executable code is ./code/code
