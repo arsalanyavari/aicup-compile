@@ -5,6 +5,8 @@ def cpuFreq():
     return str(psutil.cpu_freq()[0])
 
 # chek it => moeen
+
+
 def cpuAvailable():
     return str(100-psutil.cpu_percent())+" %"
 
@@ -46,6 +48,3 @@ def haveMem(count):
         return True
     else:
         return False
-
-
-print(cpuAvailable())
